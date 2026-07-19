@@ -1,0 +1,156 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version tag (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: '3.24.5'
+  APP_NAME: khatarnak_calculator
+  ORG: com.khatarnak
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Scaffold Android platform
+        run: |
+          if [ ! -d android ]; then
+            flutter create --platforms=android --org ${{ env.ORG }} --project-name ${{ env.APP_NAME }} .
+          fi
+
+      - name: Apply Android configuration
+        run: bash scripts/apply_platform_config.sh android
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate launcher icons
+        run: dart run flutter_launcher_icons
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  build-windows:
+    name: Build Windows EXE
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Scaffold Windows platform
+        shell: bash
+        run: |
+          if [ ! -d windows ]; then
+            flutter create --platforms=windows --org ${{ env.ORG }} --project-name ${{ env.APP_NAME }} .
+          fi
+
+      - name: Apply Windows configuration
+        shell: bash
+        run: bash scripts/apply_platform_config.sh windows
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Generate launcher icons
+        run: dart run flutter_launcher_icons
+
+      - name: Build release Windows app
+        run: flutter build windows --release
+
+      - name: Zip Windows build folder
+        shell: pwsh
+        run: |
+          $release = Get-ChildItem -Path "build/windows" -Directory -Recurse -Filter "Release" | Select-Object -First 1
+          Compress-Archive -Path "$($release.FullName)\*" -DestinationPath "khatarnak-calculator-windows.zip"
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Build Windows installer
+        shell: pwsh
+        run: |
+          $release = Get-ChildItem -Path "build/windows" -Directory -Recurse -Filter "Release" | Select-Object -First 1
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DAppBuildDir="$($release.FullName)" installer\setup.iss
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: |
+            khatarnak-calculator-windows.zip
+            installer/Output/*.exe
+
+  release:
+    name: Publish GitHub Release
+    needs: [build-android, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-apk
+          path: dist/android
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+          path: dist/windows
+
+      - name: Determine version tag
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Rename artifacts
+        run: |
+          mkdir -p release
+          cp dist/android/app-release.apk "release/khatarnak-calculator-${{ steps.ver.outputs.tag }}.apk"
+          cp dist/windows/khatarnak-calculator-windows.zip "release/khatarnak-calculator-${{ steps.ver.outputs.tag }}-windows.zip"
+          cp dist/windows/Output/*.exe "release/khatarnak-calculator-${{ steps.ver.outputs.tag }}-setup.exe"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: خطرناک Calculator ${{ steps.ver.outputs.tag }}
+          files: release/*
+          generate_release_notes: true
