@@ -1,9 +1,3 @@
-; اسکریپت Inno Setup برای ساخت نصب‌کنندهٔ ویندوزی ماشین‌حساب خطرناک
-; سازگار با ویندوز ۷، ۸.۱، ۱۰ و ۱۱
-;
-; مقدار AppBuildDir باید هنگام فراخوانی ISCC.exe با /DAppBuildDir="..." پاس داده شود
-; (مسیر build/windows/x64/runner/Release یا مشابه که flutter build windows --release می‌سازد).
-
 #ifndef AppBuildDir
   #define AppBuildDir "..\build\windows\x64\runner\Release"
 #endif

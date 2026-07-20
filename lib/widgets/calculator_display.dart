@@ -15,7 +15,6 @@ class CalculatorDisplay extends StatelessWidget {
     required this.hasError,
   });
 
-  /// عملگرهای ASCII را برای نمایش زیباتر، به نمادهای یونیکد تبدیل می‌کند.
   String _prettify(String value) {
     return value.replaceAll('*', '×').replaceAll('/', '÷').replaceAll('-', '−');
   }

@@ -4,15 +4,6 @@ import 'token.dart';
 
 /// [Parser] دنباله‌ای از [Token] را با روش نزولی بازگشتی (recursive descent)
 /// به یک درخت نحوی ([AstNode]) تبدیل می‌کند.
-///
-/// دستور زبان (از پایین‌ترین به بالاترین اولویت):
-/// ```
-/// expression := term (('+' | '-') term)*
-/// term       := power (('*' | '/' | '%') power)*
-/// power      := unary ('^' power)?      // راست‌به‌چپ
-/// unary      := ('-' | '+') unary | primary
-/// primary    := number | '(' expression ')'
-/// ```
 class Parser {
   final List<Token> tokens;
   int _pos = 0;

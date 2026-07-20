@@ -19,10 +19,6 @@ class HistoryEntry {
 
 /// مغز ماشین‌حساب: نگه‌داری وضعیت عبارت جاری، اجرای محاسبه (از طریق
 /// Lexer → Parser → AST) و مدیریت تاریخچه.
-///
-/// این کلاس از الگوی MVC پیروی می‌کند؛ رابط کاربری فقط به این شیء
-/// (به‌عنوان ChangeNotifier) گوش می‌دهد و هیچ منطق محاسباتی در ویجت‌ها
-/// وجود ندارد.
 class CalculatorController extends ChangeNotifier {
   String _expression = '';
   String _preview = '0';
@@ -98,8 +94,6 @@ class CalculatorController extends ChangeNotifier {
     _updatePreview();
   }
 
-  /// عبارت جاری را محاسبه می‌کند، در صورت موفقیت به تاریخچه اضافه کرده و
-  /// نتیجه را جایگزین عبارت جاری می‌کند.
   void evaluate() {
     if (_expression.isEmpty) return;
     final double? result = _tryEvaluate(_expression);
@@ -166,8 +160,6 @@ class CalculatorController extends ChangeNotifier {
     }
   }
 
-  /// «۵۰%» را پیش از تحلیل به «(۵۰/۱۰۰)» تبدیل می‌کند تا موتور اصلی
-  /// (Lexer/Parser) هیچ دانشی از مفهوم درصد نداشته باشد.
   String _expandPercent(String source) {
     final StringBuffer buffer = StringBuffer();
     final StringBuffer numberBuffer = StringBuffer();

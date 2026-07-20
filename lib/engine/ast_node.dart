@@ -4,6 +4,8 @@ import 'calculator_exception.dart';
 
 /// گرهٔ پایهٔ درخت نحوی (AST) یک عبارت ریاضی.
 abstract class AstNode {
+  const AstNode();
+
   double evaluate();
 }
 

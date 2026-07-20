@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# راه‌اندازی محلی پروژه: ساخت پوشه‌های پلتفرم (اگر وجود ندارند)، پیکربندی
-# و تولید آیکن‌های برنامه. بعد از این اسکریپت می‌توانید `flutter run` را اجرا کنید.
 set -euo pipefail
 
 ORG="com.khatarnak"
@@ -22,7 +20,8 @@ bash scripts/apply_platform_config.sh android
 bash scripts/apply_platform_config.sh windows
 
 flutter pub get
-dart run flutter_launcher_icons
+dart run flutter_launcher_icons -f flutter_launcher_icons-android.yaml
+dart run flutter_launcher_icons -f flutter_launcher_icons-windows.yaml
 
 echo "آماده است! برای اجرا:"
 echo "  flutter run -d windows      # ویندوز"

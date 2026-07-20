@@ -1,9 +1,3 @@
-"""تولید آیکن منبع برنامه (assets/icon/app_icon.png) با Pillow.
-
-الگو: پس‌زمینه گرادیانی نئون + گوشه‌های گرد + شبکهٔ دکمه تزئینی + نماد "=" درخشان.
-اجرا: `python3 tool/generate_icon.py` از ریشهٔ پروژه.
-"""
-
 import os
 
 from PIL import Image, ImageDraw, ImageFilter

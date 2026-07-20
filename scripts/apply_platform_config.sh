@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# این اسکریپت بعد از `flutter create` اجرا می‌شود و تنظیمات سفارشی پروژه (مانند
-# حداقل نسخهٔ اندروید) را روی پوشههای تولیدشده اعمال می‌کند.
 set -euo pipefail
 
 TARGET="${1:-}"
@@ -29,16 +27,14 @@ PYEOF
 case "$TARGET" in
   android)
     echo "تنطیم minSdkVersion روی ۲۴ (اندروید ۷.۰ Nougat)..."
-    # قالب Groovy (build.gradle)
     patch_file "android/app/build.gradle" 'minSdkVersion[[:space:]]+flutter\.minSdkVersion' 'minSdkVersion 24'
     patch_file "android/app/build.gradle" 'minSdk[[:space:]]*=[[:space:]]*flutter\.minSdkVersion' 'minSdk = 24'
-    # قالب Kotlin DSL (build.gradle.kts)
     patch_file "android/app/build.gradle.kts" 'minSdk[[:space:]]*=[[:space:]]*flutter\.minSdkVersion\.get\(\)' 'minSdk = 24'
     patch_file "android/app/build.gradle.kts" 'minSdk[[:space:]]*=[[:space:]]*flutter\.minSdkVersion' 'minSdk = 24'
     echo "پیکربندی اندروید انجام شد."
     ;;
   windows)
-    echo "پیکربندی اجباری ویندوزی لازم نیست؛ نام پروژه/سازمان در زمان ساخت تنظیم می‌شود."
+    echo "پیکربندی اجباری ویندوزی لازم نیست."
     ;;
   *)
     echo "استفاده: $0 [android|windows]" >&2
