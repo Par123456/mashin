@@ -63,9 +63,13 @@ jobs:
 
   build-windows:
     name: Build Windows EXE
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
+
+      - name: Ensure Visual Studio C++ desktop workload
+        run: choco install visualstudio2022-workload-vctools -y --no-progress
+        shell: pwsh
 
       - uses: subosito/flutter-action@v2
         with:
