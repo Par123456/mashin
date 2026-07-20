@@ -149,7 +149,7 @@ jobs:
           mkdir -p release
           cp dist/android/app-release.apk "release/khatarnak-calculator-${{ steps.ver.outputs.tag }}.apk"
           cp dist/windows/khatarnak-calculator-windows.zip "release/khatarnak-calculator-${{ steps.ver.outputs.tag }}-windows.zip"
-          cp dist/windows/Output/*.exe "release/khatarnak-calculator-${{ steps.ver.outputs.tag }}-setup.exe"
+          cp dist/windows/installer/Output/*.exe "release/khatarnak-calculator-${{ steps.ver.outputs.tag }}-setup.exe"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
