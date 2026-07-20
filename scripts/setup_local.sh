@@ -20,8 +20,8 @@ bash scripts/apply_platform_config.sh android
 bash scripts/apply_platform_config.sh windows
 
 flutter pub get
-dart run flutter_launcher_icons -f flutter_launcher_icons-android.yaml
-dart run flutter_launcher_icons -f flutter_launcher_icons-windows.yaml
+dart run flutter_launcher_icons -f icons_config_android.yaml
+dart run flutter_launcher_icons -f icons_config_windows.yaml
 
 echo "آماده است! برای اجرا:"
 echo "  flutter run -d windows      # ویندوز"

@@ -23,13 +23,13 @@ tool/         اسکریپت پایتون تولید آیکن (Pillow)
 scripts/      اسکریپت‌های راه‌اندازی پلتفرم اندروید/ویندوز (محلی و CI)
 installer/    اسکریپت Inno Setup برای ساخت نصب‌کنندهٔ ویندوز
 .github/workflows/release.yml   پایپ‌لاین کامل CI/CD
-flutter_launcher_icons-android.yaml   تنظیمات آیکن‌سازی مخصوص اندروید
-flutter_launcher_icons-windows.yaml   تنظیمات آیکن‌سازی مخصوص ویندوز
+icons_config_android.yaml   تنظیمات آیکن‌سازی مخصوص اندروید
+icons_config_windows.yaml   تنظیمات آیکن‌سازی مخصوص ویندوز
 ```
 
 > **نکته مهم:** پوشه‌های `android/` و `windows/` عمداً در مخزن قرار ندارند؛ هم در محیط محلی (`scripts/setup_local.sh`) و هم در GitHub Actions با `flutter create` به‌صورت خودکار ساخته و با `scripts/apply_platform_config.sh` پیکربندی می‌شوند (تنظیم `minSdkVersion 24`).
 
-> **نکته:** آیکون‌سازی برای هر پلتفرم در یک فایل تنظیمات جدا انجام می‌شود (`flutter_launcher_icons-android.yaml` و `flutter_launcher_icons-windows.yaml`) تا روی CI وقتی فقط یکی از پوشه‌های اندروید/ویندوز موجود است، خطای PathNotFound رخ ندهد.
+> **نکته:** آیکون‌سازی برای هر پلتفرم در یک فایل تنظیمات جدا انجام می‌شود (`icons_config_android.yaml` و `icons_config_windows.yaml`) تا روی CI وقتی فقط یکی از پوشه‌های اندروید/ویندوز موجود است، خطای PathNotFound رخ ندهد. نکته: از نامگذاری `flutter_launcher_icons-*.yaml` برای این فایل‌ها استفاده نکنید، چون کتابخانه flutter_launcher_icons آن را به‌عنوان یک "flavor" تشخیص می‌دهد و بدون توجه به `-f` همهٔ فایل‌های مشابه را اجرا می‌کند.
 
 ## اجرای محلی
 پیش‌نیاز: نصب [Flutter SDK](https://docs.flutter.dev/get-started/install) (کانال stable، نسخه ۳.۲۴ یا بالاتر).
