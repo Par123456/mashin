@@ -82,6 +82,22 @@ class Lexer {
       }
       _pos++;
     }
+    // پشتیبانی از نمادگذاری علمی (مثل 1e+21 یا 2.5E-3) تا نتایج بسیار بزرگ
+    // که به این شکل فرمت می‌شوند، دوباره قابل تجزیه باشند.
+    if (_pos < source.length &&
+        (source[_pos] == 'e' || source[_pos] == 'E')) {
+      int expPos = _pos + 1;
+      if (expPos < source.length &&
+          (source[expPos] == '+' || source[expPos] == '-')) {
+        expPos++;
+      }
+      if (expPos < source.length && _isDigit(source[expPos])) {
+        _pos = expPos;
+        while (_pos < source.length && _isDigit(source[_pos])) {
+          _pos++;
+        }
+      }
+    }
     final String text = source.substring(start, _pos);
     final double? value = double.tryParse(text);
     if (value == null) {

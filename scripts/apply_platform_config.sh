@@ -26,7 +26,7 @@ PYEOF
 
 case "$TARGET" in
   android)
-    echo "تنطیم minSdkVersion روی ۲۴ (اندروید ۷.۰ Nougat)..."
+    echo "تنظیم minSdkVersion روی ۲۴ (اندروید ۷.۰ Nougat)..."
     patch_file "android/app/build.gradle" 'minSdkVersion[[:space:]]+flutter\.minSdkVersion' 'minSdkVersion 24'
     patch_file "android/app/build.gradle" 'minSdk[[:space:]]*=[[:space:]]*flutter\.minSdkVersion' 'minSdk = 24'
     patch_file "android/app/build.gradle.kts" 'minSdk[[:space:]]*=[[:space:]]*flutter\.minSdkVersion\.get\(\)' 'minSdk = 24'

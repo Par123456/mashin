@@ -84,7 +84,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         CalcButtonData(label: '+', kind: CalcButtonKind.operatorOp, onTap: () => _controller.inputOperator('+')),
       ],
       [
-        CalcButtonData(label: '⌫', kind: CalcButtonKind.function, onTap: _controller.backspace, flex: 2),
+        CalcButtonData(label: '^', kind: CalcButtonKind.operatorOp, onTap: () => _controller.inputOperator('^')),
+        CalcButtonData(label: '⌫', kind: CalcButtonKind.function, onTap: _controller.backspace),
         CalcButtonData(label: '=', kind: CalcButtonKind.equals, onTap: _controller.evaluate, flex: 2),
       ],
     ];

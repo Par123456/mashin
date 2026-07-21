@@ -36,7 +36,7 @@ Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Tasks]
-Name: "desktopicon"; Description: "ایجاد آیکن روی دسکتاپ"; GroupDescription: "میانبره‌ها:"
+Name: "desktopicon"; Description: "ایجاد آیکن روی دسکتاپ"; GroupDescription: "میانبرها:"
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "اجرای برنامه"; Flags: nowait postinstall skipifsilent

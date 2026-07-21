@@ -70,3 +70,14 @@ class UnaryNode extends AstNode {
   @override
   double evaluate() => isNegative ? -operand.evaluate() : operand.evaluate();
 }
+
+/// درصد پسوندی: مقدار عملوند تقسیم بر ۱۰۰ (مثلاً `50%` یعنی ۰٫۵ و
+/// `(2+3)%` یعنی ۰٫۰۵).
+class PercentNode extends AstNode {
+  final AstNode operand;
+
+  const PercentNode(this.operand);
+
+  @override
+  double evaluate() => operand.evaluate() / 100;
+}

@@ -4,6 +4,19 @@ import 'token.dart';
 
 /// [Parser] دنباله‌ای از [Token] را با روش نزولی بازگشتی (recursive descent)
 /// به یک درخت نحوی ([AstNode]) تبدیل می‌کند.
+///
+/// دستور زبان (از اولویت کم به زیاد):
+/// ```
+/// expression → term (('+' | '-') term)*
+/// term       → unary (('×' | '÷') unary)*
+/// unary      → ('-' | '+') unary | power
+/// power      → postfix ('^' unary)?      // راست‌به‌چپ: 2^3^2 == 2^(3^2)
+/// postfix    → primary ('%')*            // درصد پسوندی: 50% == 0.5
+/// primary    → number | '(' expression ')'
+/// ```
+///
+/// نکته: منفی یکانی اولویتی پایین‌تر از توان دارد تا مطابق قرارداد ریاضی،
+/// `-2^2` برابر `-(2^2) = -4` باشد (و نه `(-2)^2 = 4`).
 class Parser {
   final List<Token> tokens;
   int _pos = 0;
@@ -42,27 +55,13 @@ class Parser {
   }
 
   AstNode _term() {
-    AstNode node = _power();
+    AstNode node = _unary();
     while (_current.type == TokenType.multiply ||
-        _current.type == TokenType.divide ||
-        _current.type == TokenType.percent) {
-      final TokenType type = _advance().type;
-      final BinaryOperator op = switch (type) {
-        TokenType.multiply => BinaryOperator.multiply,
-        TokenType.divide => BinaryOperator.divide,
-        _ => BinaryOperator.modulo,
-      };
-      node = BinaryNode(node, op, _power());
-    }
-    return node;
-  }
-
-  AstNode _power() {
-    final AstNode node = _unary();
-    if (_match(TokenType.power)) {
-      // راست‌به‌چپ: 2^3^2 == 2^(3^2)
-      final AstNode right = _power();
-      return BinaryNode(node, BinaryOperator.power, right);
+        _current.type == TokenType.divide) {
+      final BinaryOperator op = _advance().type == TokenType.multiply
+          ? BinaryOperator.multiply
+          : BinaryOperator.divide;
+      node = BinaryNode(node, op, _unary());
     }
     return node;
   }
@@ -74,7 +73,24 @@ class Parser {
     if (_match(TokenType.plus)) {
       return _unary();
     }
-    return _primary();
+    return _power();
+  }
+
+  AstNode _power() {
+    final AstNode node = _postfix();
+    if (_match(TokenType.power)) {
+      // راست‌به‌چپ: 2^3^2 == 2^(3^2)؛ توان می‌تواند علامت‌دار باشد: 2^-3
+      return BinaryNode(node, BinaryOperator.power, _unary());
+    }
+    return node;
+  }
+
+  AstNode _postfix() {
+    AstNode node = _primary();
+    while (_match(TokenType.percent)) {
+      node = PercentNode(node);
+    }
+    return node;
   }
 
   AstNode _primary() {
